@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dummy Website</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+            background-color: #f4f4f5;
+        }
+        header {
+            background-color: #18181b;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+        .nav-links a:hover {
+            background-color: #27272a;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+        #ap-container {
+            display: none;
+            flex-grow: 1;
+            border: 1px solid #e4e4e7;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        #ap-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        #welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+        }
+        .btn {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+        .slide-in-right {
+            animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h2>My SaaS Platform</h2>
+        <div class="nav-links">
+            <a onclick="showHome()">Home</a>
+            <a onclick="showIntegrations()">Integrations (Activepieces)</a>
+            <a onclick="showAgents()">Agents</a>
+        </div>
+    </header>
+    
+    <div class="content">
+        <div id="welcome-screen">
+            <h1>Welcome to the Dummy Website!</h1>
+            <p>This is a simulated SaaS application.</p>
+            <p>Click the button below or "Integrations" in the header to see the Activepieces frontend embedded as a page.</p>
+            <button class="btn" onclick="showIntegrations()">Open Integrations</button>
+        </div>
+        
+        <div id="agents-screen" style="display: none; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center;">
+            <h1>Agents</h1>
+            <p>This is the agents section of your SaaS platform.</p>
+        </div>
+
+        <div id="ap-container">
+            <iframe id="ap-iframe" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const agentsScreen = document.getElementById('agents-screen');
+        const apContainer = document.getElementById('ap-container');
+        const apIframe = document.getElementById('ap-iframe');
+        
+        // Ensure this matches your Activepieces frontend URL
+        const ACTIVEPIECES_FRONTEND_URL = 'http://localhost:4200/';
+
+        function showHome() {
+            // Restore header and layout
+            document.querySelector('header').style.display = 'flex';
+            document.querySelector('.content').style.padding = '2rem';
+            if (document.getElementById('back-btn')) {
+                document.getElementById('back-btn').style.display = 'none';
+            }
+
+            welcomeScreen.style.display = 'flex';
+            agentsScreen.style.display = 'none';
+            apContainer.style.display = 'none';
+        }
+
+        function showAgents() {
+            // Restore header and layout
+            document.querySelector('header').style.display = 'flex';
+            document.querySelector('.content').style.padding = '2rem';
+            if (document.getElementById('back-btn')) {
+                document.getElementById('back-btn').style.display = 'none';
+            }
+
+            welcomeScreen.style.display = 'none';
+            agentsScreen.style.display = 'flex';
+            apContainer.style.display = 'none';
+        }
+
+        function showIntegrations() {
+            welcomeScreen.style.display = 'none';
+            agentsScreen.style.display = 'none';
+            
+            // Hide the SaaS header to make the integration take up the full web page
+            document.querySelector('header').style.display = 'none';
+            document.querySelector('.content').style.padding = '0';
+            
+            apContainer.style.display = 'flex';
+            apContainer.style.border = 'none';
+            apContainer.style.borderRadius = '0';
+            
+            // Only set the src if it hasn't been set yet to avoid reloading
+            if (!apIframe.src || apIframe.src === window.location.href) {
+                apIframe.src = ACTIVEPIECES_FRONTEND_URL;
+            }
+
+            // Trigger slide animation
+            apContainer.classList.remove('slide-in-right');
+            void apContainer.offsetWidth; // force reflow
+            apContainer.classList.add('slide-in-right');
+            
+            // Add a temporary back button to return to the dummy SaaS
+            if (!document.getElementById('back-btn')) {
+                const backBtn = document.createElement('button');
+                backBtn.id = 'back-btn';
+                backBtn.innerText = '← Exit Full Page';
+                backBtn.style.position = 'absolute';
+                backBtn.style.bottom = '20px';
+                backBtn.style.left = '20px';
+                backBtn.style.padding = '10px 15px';
+                backBtn.style.backgroundColor = '#18181b';
+                backBtn.style.color = 'white';
+                backBtn.style.border = 'none';
+                backBtn.style.borderRadius = '6px';
+                backBtn.style.cursor = 'pointer';
+                backBtn.style.zIndex = '9999';
+                backBtn.onclick = showHome;
+                document.body.appendChild(backBtn);
+            } else {
+                document.getElementById('back-btn').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
