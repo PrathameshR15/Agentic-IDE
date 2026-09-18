@@ -5,7 +5,7 @@ if [ "$#" -gt 0 ]; then
 fi
 
 export AP_CONTAINER_TYPE="${AP_CONTAINER_TYPE:-WORKER_AND_APP}"
-export AP_PORT="${AP_PORT:-80}"
+export AP_PORT="${AP_PORT:-${PORT:-80}}"
 
 echo "AP_CONTAINER_TYPE: $AP_CONTAINER_TYPE"
 echo "AP_PORT: $AP_PORT"
